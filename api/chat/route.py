@@ -8,10 +8,7 @@ from urllib.parse import parse_qs, urlparse
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'python-backend'))
 
 try:
-    from main import app
     import google.generativeai as genai
-    from fastapi import Request
-    from fastapi.responses import JSONResponse
     import asyncio
 except ImportError as e:
     print(f"Import error: {e}")
@@ -79,40 +76,56 @@ def handle_chat_request(message: str, conversation_id: str = ""):
             "messages": []
         }
 
-class handler(BaseHTTPRequestHandler):
-    def do_POST(self):
-        try:
-            # Parse the request
-            content_length = int(self.headers['Content-Length'])
-            post_data = self.rfile.read(content_length)
-            body = json.loads(post_data.decode('utf-8'))
-            
-            message = body.get('message', '')
-            conversation_id = body.get('conversation_id', '')
-            
-            # Handle the chat request
-            result = handle_chat_request(message, conversation_id)
-            
-            # Send response
-            self.send_response(200)
-            self.send_header('Content-type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
-            self.send_header('Access-Control-Allow-Headers', 'Content-Type')
-            self.end_headers()
-            
-            self.wfile.write(json.dumps(result).encode())
-            
-        except Exception as e:
-            print(f"Handler error: {e}")
-            self.send_response(500)
-            self.send_header('Content-type', 'application/json')
-            self.end_headers()
-            self.wfile.write(json.dumps({"error": str(e)}).encode())
-    
-    def do_OPTIONS(self):
-        self.send_response(200)
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'POST, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers', 'Content-Type')
-        self.end_headers() 
+def handler(request, context):
+    """Vercel serverless function handler"""
+    try:
+        # Handle CORS preflight
+        if request.method == 'OPTIONS':
+            return {
+                'statusCode': 200,
+                'headers': {
+                    'Access-Control-Allow-Origin': '*',
+                    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+                    'Access-Control-Allow-Headers': 'Content-Type',
+                },
+                'body': ''
+            }
+        
+        # Only allow POST requests
+        if request.method != 'POST':
+            return {
+                'statusCode': 405,
+                'headers': {
+                    'Content-Type': 'application/json',
+                    'Access-Control-Allow-Origin': '*',
+                },
+                'body': json.dumps({'error': 'Method not allowed'})
+            }
+        
+        # Parse the request body
+        body = json.loads(request.body)
+        message = body.get('message', '')
+        conversation_id = body.get('conversation_id', '')
+        
+        # Handle the chat request
+        result = handle_chat_request(message, conversation_id)
+        
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+            },
+            'body': json.dumps(result)
+        }
+        
+    except Exception as e:
+        print(f"Handler error: {e}")
+        return {
+            'statusCode': 500,
+            'headers': {
+                'Content-Type': 'application/json',
+                'Access-Control-Allow-Origin': '*',
+            },
+            'body': json.dumps({'error': str(e)})
+        } 
