@@ -13,11 +13,11 @@ interface AgentPanelProps {
   events: AgentEvent[];
   guardrails: GuardrailCheck[];
   context: {
-    passenger_name?: string;
-    confirmation_number?: string;
-    seat_number?: string;
-    flight_number?: string;
-    account_number?: string;
+    user_name?: string;
+    favorite_team?: string;
+    favorite_sport?: string;
+    last_query_type?: string;
+    user_id?: string;
   };
 }
 
@@ -37,7 +37,7 @@ export function AgentPanel({
         <Bot className="h-5 w-5" />
         <h1 className="font-semibold text-sm sm:text-base lg:text-lg">Agent View</h1>
         <span className="ml-auto text-xs font-light tracking-wide opacity-80">
-          Airline&nbsp;Co.
+          UK&nbsp;Sports
         </span>
       </div>
 

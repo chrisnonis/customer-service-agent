@@ -101,6 +101,22 @@ export default function Home() {
         onSendMessage={handleSendMessage}
         isLoading={isLoading}
       />
+      {messages.length === 0 && !isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div className="bg-white/80 backdrop-blur-sm rounded-lg p-6 shadow-lg max-w-md text-center">
+            <h2 className="text-xl font-bold text-gray-800 mb-2">Welcome to UK Sports!</h2>
+            <p className="text-gray-600 mb-4">
+              Ask me about Premier League football, Championship teams, boxing, or the latest sports news.
+            </p>
+            <div className="text-sm text-gray-500 space-y-1">
+              <p>• "What's the Premier League table?"</p>
+              <p>• "Tell me about Tyson Fury"</p>
+              <p>• "Championship promotion race"</p>
+              <p>• "Latest sports news"</p>
+            </div>
+          </div>
+        </div>
+      )}
     </main>
   );
 }

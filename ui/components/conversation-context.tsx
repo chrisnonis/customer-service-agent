@@ -6,11 +6,11 @@ import { BookText } from "lucide-react";
 
 interface ConversationContextProps {
   context: {
-    passenger_name?: string;
-    confirmation_number?: string;
-    seat_number?: string;
-    flight_number?: string;
-    account_number?: string;
+    user_name?: string;
+    favorite_team?: string;
+    favorite_sport?: string;
+    last_query_type?: string;
+    user_id?: string;
   };
 }
 
