@@ -1,14 +1,15 @@
 {
-  "name": "openai-airline-agentsdk-demo",
-  "version": "0.1.0",
+  "name": "uk-sports-agent-demo",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
-    "dev:next": "npx next dev",
-    "dev:server": "cd ../python-backend && .venv\\Scripts\\uvicorn api:app --reload --host 127.0.0.1 --port 8000",
-    "dev": "concurrently \"npm run dev:next\" \"npm run dev:server\"",
+    "dev:next": "next dev",
+    "dev:backend": "cd ../python-backend && python run_backend.py",
+    "dev": "concurrently \"npm run dev:next\" \"npm run dev:backend\"",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "test:backend": "cd ../python-backend && python check_environment.py"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
